@@ -1,0 +1,126 @@
+{
+  "node_id": "root",
+  "node_type": "repository",
+  "name": "OpenMetadata",
+  "children": [
+    {
+      "node_id": "spec",
+      "node_type": "maven_module",
+      "name": "openmetadata-spec",
+      "children": [
+        {
+          "node_id": "spec.schemas",
+          "node_type": "directory",
+          "name": "json/schema (904 schemas)",
+          "children": [
+            {
+              "node_id": "spec.schemas.entity",
+              "node_type": "schema_group",
+              "name": "entity/",
+              "children": [
+                {
+                  "node_id": "spec.schemas.entity.data",
+                  "node_type": "schema_group",
+                  "name": "entity/data/ (table, dashboard, pipeline, topic, mlmodel, glossary, dataContract, metric, ...)",
+                  "children": []
+                },
+                {
+                  "node_id": "spec.schemas.entity.ai",
+                  "node_type": "schema_group",
+                  "name": "entity/ai/ (aiApplication, llmModel, mcpServer, agentExecution, promptTemplate, ...)",
+                  "children": []
+                },
+                {
+                  "node_id": "spec.schemas.entity.services",
+                  "node_type": "schema_group",
+                  "name": "entity/services/ (database, dashboard, pipeline, messaging, storage, mlmodel, ...)",
+                  "children": []
+                },
+                {
+                  "node_id": "spec.schemas.entity.teams",
+                  "node_type": "schema_group",
+                  "name": "entity/teams/ (user, team, role, policy)",
+                  "children": []
+                },
+                {
+                  "node_id": "spec.schemas.entity.classification",
+                  "node_type": "schema_group",
+                  "name": "entity/classification/ (classification, tag)",
+                  "children": []
+                },
+                {
+                  "node_id": "spec.schemas.entity.domains",
+                  "node_type": "schema_group",
+                  "name": "entity/domains/ (domain, dataProduct)",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "node_id": "spec.schemas.type",
+              "node_type": "schema_group",
+              "name": "type/ (entityReference, tagLabel, lineage, paging, ...)",
+              "children": []
+            },
+            {
+              "node_id": "spec.schemas.api",
+              "node_type": "schema_group",
+              "name": "api/ (CreateTable, AddLineage, CreateGlossary, ...)",
+              "children": []
+            }
+          ]
+        },
+        {
+          "node_id": "spec.generated_pojos",
+          "node_type": "directory",
+          "name": "target/generated-sources (Java POJOs via jsonschema2pojo)",
+          "children": []
+        }
+      ]
+    },
+    {
+      "node_id": "common",
+      "node_type": "maven_module",
+      "name": "common",
+      "children": [
+        {
+          "node_id": "common.utils",
+          "node_type": "package",
+          "name": "common/utils/ (CommonUtil, nullOrEmpty, ...)",
+          "children": []
+        }
+      ]
+    },
+    {
+      "node_id": "shaded_deps",
+      "node_type": "maven_module",
+      "name": "openmetadata-shaded-deps",
+      "children": [
+        {
+          "node_id": "shaded_deps.es",
+          "node_type": "submodule",
+          "name": "elasticsearch-dep (ES client relocated to es.*)",
+          "children": []
+        },
+        {
+          "node_id": "shaded_deps.os",
+          "node_type": "submodule",
+          "name": "opensearch-dep (OS client relocated to os.*)",
+          "children": []
+        }
+      ]
+    },
+    {
+      "node_id": "service",
+      "node_type": "maven_module",
+      "name": "openmetadata-service",
+      "children": [
+        {
+          "node_id": "service.app",
+          "node_type": "class",
+          "name": "OpenMetadataApplication.java (Dropwizard entry point)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "DISCOVERY": [
+    {
+      "question": "What are the top-level directories and their purpose in the OpenMetadata repository?",
+      "answer": "The repository has these major top-level trees: (1) openmetadata-spec/ — 904 JSON Schemas as the schema-first source of truth; all Java/Python/TypeScript models are generated from here. (2) openmetadata-service/ — the core Java backend: JAX-RS REST resources, JDBI3 repositories, search (ES/OS), migration runner, governance workflows, security/RBAC. (3) openmetadata-ui/src/main/resources/ui/ — the React/TypeScript SPA with 4,725 TS/TSX files. (4) ingestion/ — the Python ingestion framework with 130+ source connectors and a metadata_rest.py sink. (5) openmetadata-mcp/ — the MCP server exposing OpenMetadata to AI agents (Claude Desktop, Cursor, VS Code). (6) openmetadata-k8s-operator/ — the Kubernetes operator. (7) bootstrap/sql/migrations/ — append-only Flyway and native SQL schema migrations. (8) common/ — shared Java utilities. (9) openmetadata-shaded-deps/ — shaded Elasticsearch + OpenSearch Java clients. (10) openmetadata-integration-tests/ — backend API integration tests.",
+      "evidence": "ARCHITECTURE.md PART 2 'The 12 Maven modules + the ingestion tree'; CLAUDE.md 'Repository layout'; pom.xml <modules> list"
+    },
+    {
+      "question": "What Maven modules exist in the reactor and what is their dependency order?",
+      "answer": "The 12 Maven modules in dependency order are: common (no deps) → openmetadata-spec (→ common) → openmetadata-shaded-deps (→ external only) → openmetadata-sdk (→ spec) → openmetadata-service (→ common, spec, shaded-deps) → openmetadata-k8s-operator (→ service provided) → openmetadata-mcp (→ service) → openmetadata-integration-tests (→ sdk, service, mcp, k8s — test scope) → openmetadata-ui-core-components → openmetadata-ui → openmetadata-dist (→ service, mcp, ui) → openmetadata-clients (isolated). There are zero inter-module cycles (I1 invariant).",
+      "evidence": "ARCHITECTURE.md PART 2 module table with 'Depends on →' column; pom.xml <modules> list; ARCHITECTURE.md I1"
+    },
+    {
+      "question": "What entity schema types are defined in openmetadata-spec?",
+      "answer": "The spec defines entity schemas grouped by namespace: entity/data/ (table, dashboard, chart, pipeline, topic, mlmodel, glossary, glossaryTerm, dataContract, metric, container, searchIndex, storedProcedure, database, databaseSchema, apiCollection, apiEndpoint, ...); entity/ai/ (aiApplication, llmModel, mcpServer, agentExecution, promptTemplate, aiGovernanceFramework, aiGovernancePolicy, auditReport); entity/services/ (database, dashboard, pipeline, messaging, storage, mlmodel); entity/teams/ (user, team, role, policy); entity/domains/ (domain, dataProduct); entity/classification/ (classification, tag). There are 904 schemas total.",
+      "evidence": "ARCHITECTURE.md: '904 JSON Schemas'; gh api listing of openmetadata-spec/src/main/resources/json/schema/entity showing data/, ai/, services/, teams/ subdirs; table.json and aiApplication.json directly read"
+    },
+    {
+      "question": "Where is the Python ingestion CLI entry point and how is a connector loaded?",
+      "answer": "The CLI entry point is ingestion/src/metadata/__main__.py which calls metadata.cmd.metadata(). At runtime, a connector is loaded via its service_spec.py (ServiceSpec, resolved by DefaultSourceLoader). Each connector under ingestion/src/metadata/ingestion/source/{type}/{name}/ ships __init__.py, service_spec.py, metadata.py (the <Name>Source class), and connection.py. The source must extend a topology base (CommonDbSourceService for SQL, CommonNoSQLSource, etc.) and implement create() raising InvalidSourceException. ~97 connectors have service_spec.py; 94/95 metadata.py files carry create() + InvalidSourceException (98.9%).",
+      "evidence": "ingestion/src/metadata/__main__.py; ARCHITECTURE.md Path B and I2 invariant; ingestion/src/metadata/ingestion/api/steps.py Source class definition; ARCHITECTURE.md connector inventory"
+    }
+  ],
+  "ARCHITECTURE": [
+    {
+      "question": "What is the schema-first invariant and why does it matter?",
+      "answer": "Invariant I4: every entity field that exists in the REST API must originate in a JSON Schema file under openmetadata-spec/src/main/resources/json/schema/. The Java POJOs (via jsonschema2pojo), Python Pydantic models (via datamodel-code-generator, gitignored), and TypeScript types (via quicktype, committed) are all generated artifacts. Adding a field by hand in Java/Python/TypeScript without updating the schema will cause drift, break ingestion, and fail integration tests.",
+      "evidence": "ARCHITECTURE.md I4 invariant; CLAUDE.md 'Schema-first'; directory listing showing target/generated-sources in spec module"
+    }
+  ]
+}
